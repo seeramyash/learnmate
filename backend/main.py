@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+FRONTEND_DIR = ROOT.parent / "frontend"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -18,7 +19,8 @@ if env_path.exists():
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from routes import debug, progress, quiz, tutor, grok_chat
 from services.memory_service import ensure_memory_dir
@@ -67,3 +69,22 @@ app.include_router(quiz.router)
 app.include_router(progress.router)
 app.include_router(debug.router)
 app.include_router(grok_chat.router)
+
+if FRONTEND_DIR.exists():
+
+    @app.get("/")
+    def frontend_index():
+        return FileResponse(FRONTEND_DIR / "index.html")
+
+    app.mount(
+        "/assets",
+        StaticFiles(directory=FRONTEND_DIR),
+        name="frontend-assets",
+    )
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def frontend_fallback(path: str):
+        candidate = FRONTEND_DIR / path
+        if candidate.is_file():
+            return FileResponse(candidate)
+        return FileResponse(FRONTEND_DIR / "index.html")

@@ -102,6 +102,39 @@ Expected response:
 }
 ```
 
+## Deploy on Render
+
+This repository includes `render.yaml` for a single Render Python Web Service.
+The FastAPI backend serves both the API and the static frontend, so the deployed
+site works from one Render URL.
+
+1. Push this repository to GitHub.
+2. In Render, choose **New > Blueprint** and select this repository.
+3. Add the required secret environment variable:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+Optional:
+
+```env
+FIRECRAWL_API_KEY=your_firecrawl_api_key
+GOOGLE_API_KEY=your_google_api_key_if_you_use_it_instead
+```
+
+The Render service uses:
+
+```text
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+Health Check Path: /health
+```
+
+After deployment, open the Render URL. The frontend will call the API from the
+same origin automatically. If AI quiz generation fails, confirm that
+`GEMINI_API_KEY` is set in the Render service environment.
+
 ## Frontend Setup
 
 In a second terminal:

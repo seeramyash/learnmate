@@ -79,7 +79,18 @@ const herHavenError = document.getElementById("herHavenError");
 const sectionsWrapper = document.getElementById("sectionsWrapper");
 const identityBar = document.getElementById("identityBar");
 
-const HER_HAVEN_URL = "http://127.0.0.1:5173";
+function resolveAssistantUrl() {
+  const configured = window.LEARNMATE_3D_URL || localStorage.getItem("LEARNMATE_3D_URL");
+  if (configured && configured.trim()) return configured.trim();
+  const host = window.location.hostname;
+  if (host === "localhost" || host === "127.0.0.1") return "http://127.0.0.1:5173";
+  return "";
+}
+
+const HER_HAVEN_URL = resolveAssistantUrl();
+if (!HER_HAVEN_URL && toggle3dBtn) {
+  toggle3dBtn.style.display = "none";
+}
 
 const allActionBtns = [learnBtn, quizBtn, quizGenBtn, resourcesBtn, progressBtn, submitQuizBtn, resetBtn, memoryBtn, sendBtn].filter(Boolean);
 

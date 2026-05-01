@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: learnmate
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: GEMINI_MODEL
+        value: models/gemini-2.0-flash
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: FIRECRAWL_API_KEY
+        sync: false
