@@ -1,0 +1,61 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime data and logs
+backend/data/*.json
+*.log
+backend_*out.log
+backend_*err.log
+backend_stdout.log
+backend_stderr.log
+frontend_stdout.log
+frontend_stderr.log
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional 3D assistant source: keep only the integration used by LearnMate.
+Her-Haven-main/*
+!Her-Haven-main/.gitattributes
+!Her-Haven-main/.gitignore
+!Her-Haven-main/INTEGRATION_README.md
+!Her-Haven-main/NAVBAR_INTEGRATION.md
+!Her-Haven-main/QUICK_START.md
+!Her-Haven-main/README.md
+!Her-Haven-main/SETUP_COMPLETE.md
+!Her-Haven-main/render.yaml
+!Her-Haven-main/chat_bot/
+Her-Haven-main/chat_bot/*
+!Her-Haven-main/chat_bot/r3f-virtual-girlfriend-backend-main/
+!Her-Haven-main/chat_bot/r3f-virtual-girlfriend-frontend-main/
+
+# Optional generated assistant artifacts and external tools
+Her-Haven-main/chat_bot/ffmpeg-*/
+Her-Haven-main/chat_bot/Rhubarb-Lip-Sync-*/
+Her-Haven-main/chat_bot/r3f-virtual-girlfriend-backend-main/tools/
+Her-Haven-main/chat_bot/r3f-virtual-girlfriend-backend-main/audios/
+Her-Haven-main/chat_bot/r3f-virtual-girlfriend-backend-main/voices/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnMate AI — Adaptive Learning Companion</title>
+    <meta name="description" content="LearnMate AI is your personal adaptive tutor powered by Gemini. Get explanations, quizzes, and track your learning progress with AI." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+
+    <!-- Animated Background Blobs -->
+    <div class="bg-blobs" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- App Shell -->
+    <div class="app-shell">
+
+      <!-- ===== LEFT SIDEBAR ===== -->
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-top">
+          <div class="logo-area">
+            <div class="logo-icon"><i class="fa-solid fa-brain"></i></div>
+            <div class="logo-text">
+              <span class="logo-name">LearnMate</span>
+              <span class="logo-sub">Adaptive AI Tutor</span>
+            </div>
+          </div>
+
+          <nav class="sidebar-nav" role="navigation" aria-label="Main navigation">
+            <a href="#section-home"   class="nav-item active" data-section="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="#section-learn"  class="nav-item" data-section="learn"><i class="fa-solid fa-lightbulb"></i><span>Learn</span></a>
+            <a href="#section-quiz"   class="nav-item" data-section="quiz"><i class="fa-solid fa-circle-question"></i><span>Quiz</span></a>
+            <a href="#section-progress" class="nav-item" data-section="progress"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a>
+            <a href="#section-resources" class="nav-item" data-section="resources"><i class="fa-solid fa-book-open"></i><span>Resources</span></a>
+            <a href="#section-memory" class="nav-item" data-section="memory"><i class="fa-solid fa-database"></i><span>Memory</span></a>
+            <a href="#" class="nav-item" data-section="settings" id="settingsNavBtn"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <div class="user-profile-card">
+            <div class="avatar-ring">
+              <div class="avatar"><i class="fa-solid fa-user"></i></div>
+            </div>
+            <div class="user-info">
+              <span class="user-name" id="sidebarUserName">student_001</span>
+              <span class="streak-badge"><i class="fa-solid fa-fire"></i> <span id="sidebarStreak">0</span> day streak</span>
+            </div>
+          </div>
+          <div class="sidebar-footer-actions">
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle theme" type="button">
+              <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </button>
+            <div class="api-status-dot" title="Backend status"><span class="dot"></span> <span id="apiStatusText">Checking…</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="main-content" id="mainContent">
+
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+          <button id="sidebarToggle" class="sidebar-toggle-btn" aria-label="Toggle sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="navbar-center">
+            <h1 class="navbar-title">LearnMate <span class="accent-text">AI</span></h1>
+          </div>
+          <div class="navbar-actions">
+            <button id="toggle3dBtn" class="quick-btn accent" style="margin-right: 10px;" title="Switch to 3D Assistant"><i class="fa-solid fa-vr-cardboard"></i> <span class="hide-mobile">3D Assistant</span></button>
+            <div id="modelBadge" class="model-badge fallback">
+              <i class="fa-solid fa-circle-dot"></i>
+              <span>Fallback</span>
+            </div>
+            <div id="loadingStatus" class="loading-status-inline"></div>
+            <button class="icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i><span class="notif-dot"></span></button>
+            <button class="icon-btn" title="Profile" id="profileBtn"><i class="fa-solid fa-user-circle"></i></button>
+          </div>
+        </header>
+
+        <!-- Identity bar (sticky) -->
+        <div class="identity-sticky-bar glass-card" id="identityBar">
+          <div class="identity-field">
+            <i class="fa-solid fa-id-badge"></i>
+            <input id="userId" type="text" placeholder="User ID (e.g. student_001)" autocomplete="off" />
+          </div>
+          <div class="identity-field">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <input id="topic" type="text" placeholder="Topic (e.g. Recursion, DBMS, OOP)" autocomplete="off" />
+          </div>
+        </div>
+
+        <!-- ===== SCROLLABLE SECTIONS ===== -->
+        <div class="sections-wrapper" id="sectionsWrapper">
+
+          <!-- ===================== HOME ===================== -->
+          <section id="section-home" class="page-section active-section">
+            <div class="hero-banner">
+              <div class="hero-text">
+                <div class="hero-badge"><i class="fa-solid fa-sparkles"></i> Powered by Gemini AI</div>
+                <h2 class="hero-title">Your Personal AI<br /><span class="gradient-text">Learning Companion</span></h2>
+                <p class="hero-sub">Adaptive explanations, instant quizzes, and smart progress tracking — personalized for you in real time.</p>
+                <div class="hero-cta-row">
+                  <button class="cta-btn primary" onclick="scrollToSection('learn'); document.getElementById('learnBtn').click()">
+                    <i class="fa-solid fa-lightbulb"></i> Start Learning
+                  </button>
+                  <button class="cta-btn secondary" onclick="scrollToSection('quiz')">
+                    <i class="fa-solid fa-circle-question"></i> Take a Quiz
+                  </button>
+                </div>
+              </div>
+              <div class="hero-illustration" aria-hidden="true">
+                <div class="orbit-ring ring-1"><div class="orbit-dot"></div></div>
+                <div class="orbit-ring ring-2"><div class="orbit-dot"></div></div>
+                <div class="orbit-ring ring-3"><div class="orbit-dot"></div></div>
+                <div class="brain-center"><i class="fa-solid fa-brain"></i></div>
+              </div>
+            </div>
+
+            <!-- Suggestion Chips -->
+            <div class="chips-area">
+              <span class="chips-label">Quick start:</span>
+              <div class="chips-row">
+                <button class="chip" data-topic="Recursion" data-action="learn"><i class="fa-solid fa-code"></i> Explain Recursion</button>
+                <button class="chip" data-topic="DBMS" data-action="quiz"><i class="fa-solid fa-circle-question"></i> Quiz Me on DBMS</button>
+                <button class="chip" data-topic="Object Oriented Programming" data-action="learn"><i class="fa-solid fa-cube"></i> OOP Concepts</button>
+                <button class="chip" data-topic="Data Structures and Algorithms" data-action="learn"><i class="fa-solid fa-sitemap"></i> DSA Basics</button>
+                <button class="chip" data-topic="Operating Systems" data-action="learn"><i class="fa-solid fa-server"></i> Explain OS</button>
+                <button class="chip" data-topic="Dynamic Programming" data-action="learn"><i class="fa-solid fa-diagram-project"></i> Dynamic Programming</button>
+              </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="feature-grid">
+              <div class="feature-card" onclick="scrollToSection('learn')">
+                <div class="feature-icon learn"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3>Adaptive Learning</h3>
+                <p>AI adjusts explanation depth based on your quiz performance — simple to advanced.</p>
+              </div>
+              <div class="feature-card" onclick="scrollToSection('quiz')">
+                <div class="feature-icon quiz"><i class="fa-solid fa-circle-question"></i></div>
+                <h3>Smart Quizzes</h3>
+                <p>Topic-specific MCQs with instant feedback, explanations, and automated grading.</p>
+              </div>
+              <div class="feature-card" onclick="scrollToSection('progress')">
+                <div class="feature-icon progress"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Progress Analytics</h3>
+                <p>Track accuracy, streaks, weak/strong areas, and mastery over time.</p>
+              </div>
+              <div class="feature-card" onclick="scrollToSection('memory')">
+                <div class="feature-icon memory"><i class="fa-solid fa-database"></i></div>
+                <h3>Persistent Memory</h3>
+                <p>Your learning profile is remembered across sessions — fully personalized AI tutor.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===================== LEARN ===================== -->
+          <section id="section-learn" class="page-section">
+            <div class="section-title-row">
+              <div class="section-badge learn"><i class="fa-solid fa-lightbulb"></i> Learn</div>
+              <h2 class="section-heading">AI Explanation Engine</h2>
+              <p class="section-sub">Get a structured, personalized explanation of any topic — adapted to your current level.</p>
+            </div>
+
+            <div class="glass-card chat-container" id="chatContainer">
+              <div class="chat-header">
+                <div class="chat-header-left">
+                  <div class="ai-avatar"><i class="fa-solid fa-brain"></i></div>
+                  <div>
+                    <span class="chat-title">LearnMate AI</span>
+                    <span class="chat-status"><span class="status-dot"></span> Online • Adaptive</span>
+                  </div>
+                </div>
+                <div class="chat-header-right">
+                  <button class="icon-btn sm" id="clearChatBtn" title="Clear chat"><i class="fa-solid fa-trash-can"></i></button>
+                  <button class="icon-btn sm" id="resetBtn" title="Reset Progress"><i class="fa-solid fa-rotate-left"></i></button>
+                </div>
+              </div>
+
+              <div class="chat-messages" id="chatMessages">
+                <div class="message ai-message">
+                  <div class="msg-avatar"><i class="fa-solid fa-brain"></i></div>
+                  <div class="msg-content">
+                    <div class="msg-bubble">
+                      <p>👋 Hey! I'm <strong>LearnMate AI</strong> — your adaptive learning companion.</p>
+                      <p>I'll tailor my explanations to your level, generate topic-specific quizzes, and track your progress. Enter your <strong>User ID</strong> and <strong>Topic</strong> in the bar above, then click <strong>Learn</strong> below!</p>
+                    </div>
+                    <span class="msg-time">Just now</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="typing-indicator" id="typingIndicator" style="display:none">
+                <div class="msg-avatar"><i class="fa-solid fa-brain"></i></div>
+                <div class="typing-dots"><span></span><span></span><span></span></div>
+                <span class="typing-label">LearnMate is thinking…</span>
+              </div>
+
+              <div class="quick-actions">
+                <button class="quick-btn" id="learnBtn"><i class="fa-solid fa-lightbulb"></i> Learn</button>
+                <button class="quick-btn accent" id="quizBtn"><i class="fa-solid fa-circle-question"></i> Generate Quiz</button>
+                <button class="quick-btn" id="resourcesBtn"><i class="fa-solid fa-book-open"></i> Get Resources</button>
+                <button class="quick-btn" id="progressBtn"><i class="fa-solid fa-chart-bar"></i> My Progress</button>
+              </div>
+
+              <div class="chat-input-area">
+                <div class="chat-input-box">
+                  <button class="icon-btn sm" title="Attach"><i class="fa-solid fa-paperclip"></i></button>
+                  <input id="chatInput" type="text" placeholder="Ask anything about your topic, or type a topic name…" autocomplete="off" />
+                  <button class="icon-btn sm" title="Voice" id="voiceInputBtn"><i class="fa-solid fa-microphone"></i></button>
+                  <button class="send-btn" id="sendBtn" title="Send"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===================== QUIZ ===================== -->
+          <section id="section-quiz" class="page-section">
+            <div class="section-title-row">
+              <div class="section-badge quiz"><i class="fa-solid fa-circle-question"></i> Quiz</div>
+              <h2 class="section-heading">Knowledge Assessment</h2>
+              <p class="section-sub">Auto-generated, topic-specific MCQs that adapt to your performance level.</p>
+            </div>
+
+            <div class="glass-card quiz-area" id="quizArea">
+              <div class="quiz-header-row">
+                <div id="quizMeta" class="quiz-meta-text"></div>
+                <div class="quiz-btn-row">
+                  <button class="quick-btn accent" id="quizGenBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Quiz</button>
+                  <button class="quick-btn" id="submitQuizBtn" style="display:none"><i class="fa-solid fa-paper-plane"></i> Submit Answers</button>
+                </div>
+              </div>
+              <div id="quizOutput" class="quiz-output">
+                <div class="empty-state-card">
+                  <div class="empty-icon"><i class="fa-solid fa-circle-question"></i></div>
+                  <h3>No Quiz Yet</h3>
+                  <p>Enter a topic above and click "Generate Quiz" to start a knowledge assessment.</p>
+                </div>
+              </div>
+              <div id="quizResultOutput" class="quiz-result"></div>
+            </div>
+          </section>
+
+          <!-- ===================== PROGRESS ===================== -->
+          <section id="section-progress" class="page-section">
+            <div class="section-title-row">
+              <div class="section-badge progress-badge"><i class="fa-solid fa-chart-line"></i> Progress</div>
+              <h2 class="section-heading">Learning Analytics</h2>
+              <p class="section-sub">Your personalized performance dashboard — updated automatically after each session.</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon accuracy"><i class="fa-solid fa-bullseye"></i></div>
+                <div class="stat-info"><span class="stat-value" id="statAccuracyVal">—</span><span class="stat-label">Quiz Accuracy</span></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon streak"><i class="fa-solid fa-fire"></i></div>
+                <div class="stat-info"><span class="stat-value" id="statStreakVal">0</span><span class="stat-label">Day Streak</span></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon topics"><i class="fa-solid fa-book"></i></div>
+                <div class="stat-info"><span class="stat-value" id="statTopicsVal">0</span><span class="stat-label">Topics Learned</span></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon questions"><i class="fa-solid fa-list-check"></i></div>
+                <div class="stat-info"><span class="stat-value" id="statQuestionsVal">0</span><span class="stat-label">Questions Done</span></div>
+              </div>
+            </div>
+
+            <div class="progress-grid">
+              <!-- Mastery Donut -->
+              <div class="glass-card panel-card prog-donut-card">
+                <div class="panel-card-header"><i class="fa-solid fa-circle-half-stroke"></i> Overall Mastery</div>
+                <div class="donut-wrap">
+                  <canvas id="donutChart" width="160" height="160"></canvas>
+                  <div class="donut-center-text"><span id="donutPercent">0%</span><small>Mastery</small></div>
+                </div>
+                <div class="mastery-legend">
+                  <span class="legend-item"><span class="dot-red"></span> &lt;50% needs work</span>
+                  <span class="legend-item"><span class="dot-blue"></span> 50–79% good</span>
+                  <span class="legend-item"><span class="dot-green"></span> 80%+ strong</span>
+                </div>
+              </div>
+
+              <!-- Bar Chart -->
+              <div class="glass-card panel-card">
+                <div class="panel-card-header"><i class="fa-solid fa-chart-column"></i> Topic Performance</div>
+                <div class="chart-wrap" id="barChartWrap" style="display:none"><canvas id="barChart" height="200"></canvas></div>
+                <div id="barChartEmpty" class="empty-state-small"><i class="fa-solid fa-chart-column"></i><span>Complete a quiz to see your performance by topic</span></div>
+              </div>
+
+              <!-- Knowledge Map -->
+              <div class="glass-card panel-card">
+                <div class="panel-card-header"><i class="fa-solid fa-map"></i> Knowledge Map</div>
+                <div class="knowledge-section">
+                  <div class="knowledge-label weak"><i class="fa-solid fa-triangle-exclamation"></i> Weak Areas (needs work)</div>
+                  <div id="weakAreas" class="tags-row"><span class="empty-tag">No weak areas identified yet — keep quizzing!</span></div>
+                </div>
+                <div class="knowledge-section" style="margin-top:14px">
+                  <div class="knowledge-label strong"><i class="fa-solid fa-star"></i> Strong Areas (doing well)</div>
+                  <div id="strongAreas" class="tags-row"><span class="empty-tag">Complete quizzes to identify your strengths</span></div>
+                </div>
+              </div>
+
+              <!-- Topic Mastery Bars -->
+              <div class="glass-card panel-card">
+                <div class="panel-card-header"><i class="fa-solid fa-list-check"></i> Topic Mastery</div>
+                <div id="topicMasteryList" class="topic-mastery-list">
+                  <div class="empty-state-small"><i class="fa-regular fa-compass"></i><span>Start learning to track topic mastery</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Learning Style -->
+            <div class="glass-card panel-card" style="margin-top:14px">
+              <div class="panel-card-header"><i class="fa-solid fa-sliders"></i> Learning Profile</div>
+              <div class="learning-profile-row">
+                <div class="profile-item"><i class="fa-solid fa-brain"></i><div><span class="pf-label">Learning Style</span><span class="pf-val" id="profileStyle">balanced</span></div></div>
+                <div class="profile-item"><i class="fa-solid fa-chart-mixed"></i><div><span class="pf-label">Improvement Trend</span><span class="pf-val" id="profileTrend">—</span></div></div>
+                <div class="profile-item"><i class="fa-solid fa-clipboard-list"></i><div><span class="pf-label">Quiz Sessions</span><span class="pf-val" id="profileSessions">0</span></div></div>
+                <div class="profile-item"><i class="fa-solid fa-clock-rotate-left"></i><div><span class="pf-label">Recent Topics</span><span class="pf-val" id="profileTopics">—</span></div></div>
+              </div>
+              <div style="margin-top:12px">
+                <button class="quick-btn" id="refreshProgressBtn"><i class="fa-solid fa-rotate"></i> Refresh Dashboard</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===================== RESOURCES ===================== -->
+          <section id="section-resources" class="page-section">
+            <div class="section-title-row">
+              <div class="section-badge resources-badge"><i class="fa-solid fa-book-open"></i> Resources</div>
+              <h2 class="section-heading">Learning Resources</h2>
+              <p class="section-sub">Curated external resources for your current topic. Powered by Firecrawl.</p>
+            </div>
+
+            <div class="glass-card resources-panel" id="resourcesPanel">
+              <div class="empty-state-card">
+                <div class="empty-icon res"><i class="fa-solid fa-book-open"></i></div>
+                <h3>No Resources Yet</h3>
+                <p>Enter a topic above and click "Get Resources" to fetch curated learning materials.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===================== MEMORY ===================== -->
+          <section id="section-memory" class="page-section">
+            <div class="section-title-row">
+              <div class="section-badge memory-badge"><i class="fa-solid fa-database"></i> Memory</div>
+              <h2 class="section-heading">Learning Memory</h2>
+              <p class="section-sub">Your AI's persistent knowledge about your learning journey — stored and updated after every session.</p>
+            </div>
+
+            <div class="memory-grid">
+              <div class="glass-card panel-card" id="memoryOverviewCard">
+                <div class="panel-card-header"><i class="fa-solid fa-memory"></i> Memory Summary
+                  <button class="icon-btn sm ml-auto" id="memoryBtn" title="Refresh Memory"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+                <div id="memoryOutput" class="memory-content">
+                  <div class="empty-state-small"><i class="fa-solid fa-database"></i><span>No memory stored yet — start a learning session!</span></div>
+                </div>
+              </div>
+              <div class="glass-card panel-card">
+                <div class="panel-card-header"><i class="fa-solid fa-clock-rotate-left"></i> Recent Topics</div>
+                <div id="topicHistory" class="topic-history-list">
+                  <div class="empty-state-small"><i class="fa-regular fa-clock"></i><span>Your recent topics will appear here</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card panel-card" style="margin-top:14px">
+              <div class="panel-card-header"><i class="fa-solid fa-code"></i> Raw Memory JSON</div>
+              <div id="rawMemoryOutput" class="memory-raw-box">Click "Refresh Memory" above to view raw data.</div>
+              <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+                <button class="quick-btn" id="memoryViewBtn"><i class="fa-solid fa-eye"></i> Load Raw Memory</button>
+                <button class="quick-btn danger-btn" id="resetMemBtn"><i class="fa-solid fa-trash"></i> Reset All Progress</button>
+              </div>
+            </div>
+          </section>
+
+        </div><!-- /sections-wrapper -->
+
+        <!-- ===================== 3D ASSISTANT ===================== -->
+        <div id="herHavenContainer" style="display:none; width:100%; height:100%; flex-grow:1; flex:1; overflow:hidden; position:relative;">
+          <iframe id="herHavenIframe" src="" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
+          <div id="herHavenError" style="display:none; position:absolute; inset:0; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.85); color:white; border-radius:12px; z-index:10; text-align:center;">
+             <h3 style="font-size:18px; margin-bottom:8px;">3D Assistant is not running.</h3>
+             <p style="font-size:14px; opacity:0.8;">Please start Her-Haven frontend on port 5173.</p>
+          </div>
+        </div>
+
+      </main>
+    </div><!-- /app-shell -->
+
+    <!-- ===== SETTINGS MODAL ===== -->
+    <div id="settingsModal" class="modal-overlay" style="display:none">
+      <div class="modal-box glass-card">
+        <div class="modal-header">
+          <span><i class="fa-solid fa-gear"></i> Settings</span>
+          <button class="icon-btn sm" id="closeSettingsBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-row">
+            <label>Custom API Base URL</label>
+            <input type="text" id="apiBaseInput" placeholder="http://127.0.0.1:8000" />
+            <button class="quick-btn" id="saveApiBaseBtn"><i class="fa-solid fa-save"></i> Save</button>
+          </div>
+          <div class="setting-row">
+            <label>Theme</label>
+            <div style="display:flex; gap:8px">
+              <button class="chip" onclick="setTheme('dark')"><i class="fa-solid fa-moon"></i> Dark</button>
+              <button class="chip" onclick="setTheme('light')"><i class="fa-solid fa-sun"></i> Light</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <label>Backend</label>
+            <div id="apiStatus" class="api-status-dot"><span class="dot"></span><span id="settingsApiStatus">Checking…</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
