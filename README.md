@@ -5,7 +5,7 @@ LearnMate AI is an adaptive learning companion that explains topics, generates q
 The project contains a FastAPI backend, a static HTML/CSS/JavaScript frontend, JSON-based learner memory, optional Firecrawl resource lookup, Gemini/Ollama LLM support, and an optional 3D assistant integration.
 
 ## Live Demo
-[Open App]((https://learnmate-fq4u.onrender.com/))
+[Open App](https://learnmate-fq4u.onrender.com/)
 
 ## Demo Video
 [Watch Demo](https://drive.google.com/file/d/1zj4rMaL2JIe6idseJuolNa7TltAVUkZy/view?usp=sharing)
